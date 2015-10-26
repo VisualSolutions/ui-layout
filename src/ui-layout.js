@@ -902,14 +902,17 @@ angular.module('ui.layout', [])
       var index = 0;
       var timer = null;
       var self = this;
-      self.currentStateKey = uiLayoutStateKey + '.' + $state.current.name;
+      
+      self.getCurrentStateKey = function () {
+        return uiLayoutStateKey + '.' + $state.current.name;
+      }
 
       self.push = function (container) {
         containers.push(container);
       }
 
       self.getSize = function (containerId) {
-        return _.find(JSON.parse(storage.get(self.currentStateKey)), function (container) {
+        return _.find(JSON.parse(storage.get(self.getCurrentStateKey())), function (container) {
           if (container.containerId === containerId) {
             return container.containerSize;
           }
@@ -935,7 +938,7 @@ angular.module('ui.layout', [])
           $timeout.cancel(timer);
         }
         timer = $timeout(function () {
-          storage.set(self.currentStateKey, self.serialize());
+          storage.set(self.getCurrentStateKey(), self.serialize());
           timer = null;
         }, 50);
       }
